@@ -30,7 +30,7 @@ def find_best_tree_height(n):
   """
   log_n = int(log2(n))
   min_computations = inf
-  best_log_k = 1
+  best_tree_height = 1
   for tree_height in range(2, log_n):
     k = 2 ** tree_height
     lamda = n ** (1 / (1 + tree_height))
@@ -189,6 +189,6 @@ def solve(n, desired_sum=0, tree_height=None, generator=lambda n, i: random.rand
   if tree_height is None:
     tree_height = find_best_tree_height(n)
 
-  List = ListFactory(n, tree_height, desired_sum, generator)
+  List = ListFactory(n, desired_sum, tree_height, generator)
   root = List.at_height(tree_height)
   return root.items[0].ancestors()

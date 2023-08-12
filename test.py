@@ -16,7 +16,7 @@ def shagen(n, index):
 def benchmark():
   n = 2 ** 64
   tree_height = 8
-  List = wagner.ListFactory(n, tree_height)
+  List = wagner.ListFactory(n, tree_height=tree_height)
 
   l1 = List.generate(0)
   l2 = List.generate(1)
@@ -53,7 +53,7 @@ if __name__ == "__main__":
   tree_height = None
   desired_sum = 0
 
-  elements = wagner.solve(n, tree_height, desired_sum, generator=shagen)
+  elements = wagner.solve(n, desired_sum, tree_height, generator=shagen)
 
   # print('solved with k = %d' % (len(elements)))
   # print(elements)

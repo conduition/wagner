@@ -85,13 +85,20 @@ def ListFactory(n, desired_sum=0, tree_height=None, generator=lambda n, i: rando
 
       return List(items, 0)
 
+    def __iter__(self):
+      return iter(self.items)
+    def __len__(self):
+      return len(self.items)
+    def __getitem__(self, i):
+      return self.items[i]
+
     # inefficient example merging operator.
     # merges lists by iterating through every sum.
     def __xor__(L1, L2):
       a, b = filter_ranges[L1.height + 1]
       sums = []
-      for e1 in L1.items:
-        for e2 in L2.items:
+      for e1 in L1:
+        for e2 in L2:
           z = (e1 + e2) % n
           if z >= a or z <= b:
             sums.append(Lineage(z, e1, e2))
@@ -104,12 +111,12 @@ def ListFactory(n, desired_sum=0, tree_height=None, generator=lambda n, i: rando
       sums = []
 
       # sort L2 so we can perform binary searches on it.
-      sorted_other_items = sorted(L2.items)
+      sorted_other_items = sorted(L2)
 
       l2_min = sorted_other_items[0]
       l2_max = sorted_other_items[-1]
 
-      for e1 in L1.items:
+      for e1 in L1:
         # find the range in L2 within which e1 + e2 could fall into [a, b].
         # e2 = a - e1 will be the minimum number needed so that e1 + e2 = a.
         #
@@ -167,7 +174,7 @@ def ListFactory(n, desired_sum=0, tree_height=None, generator=lambda n, i: rando
       left_index = index - (1 << (height - 1))
 
       merged = List([], height)
-      while len(merged.items) == 0:
+      while len(merged) == 0:
         if height == 1:
           left = List.generate(left_index)
           right = List.generate(right_index)
@@ -191,4 +198,4 @@ def solve(n, desired_sum=0, tree_height=None, generator=lambda n, i: random.rand
 
   List = ListFactory(n, desired_sum, tree_height, generator)
   root = List.at_height(tree_height)
-  return root.items[0].ancestors()
+  return root[0].ancestors()

@@ -2,6 +2,7 @@ from math import log2, inf
 import random
 from bisect import bisect_left
 
+
 class Lineage(int):
   """
   Lineage represents an integer and pointers to ancestor objects which created it.
@@ -12,6 +13,10 @@ class Lineage(int):
     return el
 
   def ancestors(self):
+    """
+    Returns any ancestor values which were used to create the instance.
+    Operates recursively, walking up to the oldest ancestor values.
+    """
     if len(self._ancestors) == 0:
       return [self]
     ancestors = []
@@ -44,7 +49,20 @@ def find_best_tree_height(n):
   return log_n
 
 
-def ListFactory(n, desired_sum=0, tree_height=None, generator=lambda n, i: random.randrange(n)):
+def default_generator(n, i):
+  """
+  Generates a random number using random.randrange(n). Used as the default
+  List element generating callback if one is not given.
+  """
+  return random.randrange(n)
+
+
+def ListFactory(n, desired_sum=0, tree_height=None, generator=default_generator):
+  """
+  Creates a List class used to solve a given class of birthday problem, over the
+  given modulus n. Most use-cases will want to use the top-level solve method
+  instead.
+  """
   if tree_height is None:
     tree_height = find_best_tree_height(n)
 
@@ -71,11 +89,24 @@ def ListFactory(n, desired_sum=0, tree_height=None, generator=lambda n, i: rando
 
 
   class List:
+    """
+    List represents a list of random elements, either the result of previous list merging
+    operations, or a freshly generated leaf list itself.
+
+    Most use cases should use the top-level solve method instead.
+    """
+
     def __init__(self, items, height):
       self.items = items
       self.height = height
 
     def generate(index):
+      """
+      Generates a new list at height zero (a leaf list) with the given
+      index. If the index indicates the List will be the last in the whole
+      set of k lists (i.e. index == k - 1), then the desired sum will be
+      subtracted from each element after it is generated.
+      """
       items = [generator(n, index) for _ in range(list_length)]
       # The last list must be modified to produce a set with our desired sum.
       # Include a pointer back to the original random number.
@@ -192,7 +223,24 @@ def ListFactory(n, desired_sum=0, tree_height=None, generator=lambda n, i: rando
 
   return List
 
-def solve(n, desired_sum=0, tree_height=None, generator=lambda n, i: random.randrange(n)):
+def solve(n, desired_sum=0, tree_height=None, generator=default_generator):
+  """
+  Compute a solution to the generalized birthday problem modulo n. Outputs
+  a list of integers which sum to the given desired_sum modulo n.
+
+  By default solve will automatically compute the optimal number of lists needed for
+  computing a solution quickly. If the caller would like to specify a certain number
+  of output values k, simply supply the tree_height parameter such that k = 2 ** tree_height,
+  (k must be a power of two).
+
+  Leaf elements will be generated randomly by default. Callers may pass a generator
+  function g(n, i). This function takes the modulus n and the list index i (lists are
+  indexed from zero) and should output a random integer or Lineage instance.
+
+  If the caller wishes to generate pseudo-random list elements by hashing randomized
+  input data, they can make solve return the hash function's input data by returning
+  Lineage instances in the generator function. See the readme for details.
+  """
   if tree_height is None:
     tree_height = find_best_tree_height(n)
 

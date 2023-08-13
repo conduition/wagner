@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 setup(name="wagner",
-      version="0.0.0",
+      version="0.0.1",
       description="Python implementation of Wagner's Algorithm for the Generalized Birthday Problem.",
       author="conduition",
       author_email="conduition@proton.me",

@@ -3,15 +3,6 @@ import random
 import hashlib
 import timeit
 
-def hashfunc(r, n, index):
-  r_bytes = r.to_bytes((int.bit_length(n) + 7) // 8, 'big')
-  preimage = r_bytes + index.to_bytes(16, 'big')
-  h = hashlib.sha256(preimage).digest()
-  return int.from_bytes(h, 'big') % n
-
-def shagen(n, index):
-  r = random.randrange(0, n)
-  return wagner.Lineage(hashfunc(r, n, index), r)
 
 def benchmark():
   n = 2 ** 64
@@ -26,7 +17,6 @@ def benchmark():
   l6 = List.generate(5)
   l7 = List.generate(6)
   l8 = List.generate(7)
-
 
   print('binary merge h = 1:', timeit.timeit(lambda: l1 & l2, number=100))
   print('linear merge h = 1:', timeit.timeit(lambda: l1 ^ l2, number=100))
@@ -45,6 +35,17 @@ def benchmark():
   print('binary merge h = 3:', timeit.timeit(lambda: l1234 & l5678, number=100))
   print('linear merge h = 3:', timeit.timeit(lambda: l1234 ^ l5678, number=100))
 
+
+def hashfunc(r, n, index):
+  r_bytes = r.to_bytes((int.bit_length(n) + 7) // 8, 'big')
+  preimage = r_bytes + index.to_bytes(16, 'big')
+  h = hashlib.sha256(preimage).digest()
+  return int.from_bytes(h, 'big') % n
+
+
+def shagen(n, index):
+  r = random.randrange(0, n)
+  return wagner.Lineage(hashfunc(r, n, index), r)
 
 
 if __name__ == "__main__":

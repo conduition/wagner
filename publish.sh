@@ -27,6 +27,7 @@ curl -v -X POST https://upload.pypi.org/legacy/ \
   -F metadata_version="2.1" \
   -F name=wagner \
   -F version="$version" \
+  -F summary="Python implementation of Wagner's Algorithm for the Generalized Birthday Problem." \
   -F description="$(cat README.md)" \
   -F description_content_type="text/markdown; charset=UTF-8; variant=GFM" \
   -F keywords="birthday,musig,attack,wagner,generalized birthday problem,k-sum,k sum" \
